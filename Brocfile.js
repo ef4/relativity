@@ -12,7 +12,7 @@ function createAMDTree() {
     main: 'relativity'
   });
   amd = concat(amd, {
-    inputFiles: ['relativity.js'],
+    inputFiles: ['*.js'],
     outputFile: '/relativity.amd.js'
   });
   return amd;
