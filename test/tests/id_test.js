@@ -1,6 +1,6 @@
 import ID from "relativity/id";
 
-module("ID invariants");
+module("ID");
 
 function isDisjoint(idA, idB) {
   return idA.zip(idB).map(function(leaves) {
@@ -43,4 +43,18 @@ test("disjointness tester works", function() {
   ok(isDisjoint(new ID(1), new ID(0)));
   ok(!isDisjoint(new ID([1,0]), new ID([[1,0],0])));
   ok(isDisjoint(new ID([1,0]), new ID([[0,0],0])));
+});
+
+test("normalization", function() {
+  var cases = [
+    {from: 0, to: 0},
+    {from: 1, to: 1},
+    {from: [0,1], to: [0,1]},
+    {from: [0,0], to: 0},
+    {from: [1,[0,0]], to: [1,0]},
+    {from: [1,[1,1]], to: 1}
+  ];
+  for (var i=0; i<cases.length; i++) {
+    deepEqual(new ID(cases[i].from).normalize().flatten(), cases[i].to);
+  }
 });
