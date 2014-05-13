@@ -1,4 +1,6 @@
-relativity
-==========
+Interval Tree Clocks for Javascript
+===================================
 
-Interval tree clocks for Javascript
+Because any sufficiently advanced web application *is* a distributed
+system.
+
