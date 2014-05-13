@@ -58,3 +58,18 @@ test("normalization", function() {
     deepEqual(new ID(cases[i].from).normalize().flatten(), cases[i].to);
   }
 });
+
+test("sum", function() {
+  var cases = [
+    {add: 0, to: 0, get: 0},
+    {add: 1, to: 1, get: 1},
+    {add: 0, to: 1, get: 1},
+    {add: [1,0], to: [0, 1], get: 1},
+    {add: [0,[0,[0,1]]], to: [[[1,0],0],0], get: [[[1,0],0],[0, [0,1]]]},
+    {add: [1,[0,[0,1]]], to: [[[1,0],0],0], get: [1,[0, [0,1]]]},
+    {add: [1,[0,[0,1]]], to: [1,[0,[1,0]]], get: [1,[0, 1]]}
+  ];
+  for (var i=0; i<cases.length; i++) {
+    deepEqual(new ID(cases[i].add).sum(new ID(cases[i].to)).flatten(), cases[i].get);
+  }
+});
