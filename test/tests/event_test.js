@@ -45,7 +45,7 @@ test("comparison", function() {
   for (var i=0; i<examples.length; i++) {
     var example = examples[i];
     var value = new Event(example.value);
-    if (typeof(example.isLTE) != "undefined") {
+    if (typeof(example.isLTE) !== "undefined") {
       ok(value.lte(new Event(example.isLTE)), JSON.stringify(example));
     } else {
       ok(!value.lte(new Event(example.isNotLTE)), JSON.stringify(example));

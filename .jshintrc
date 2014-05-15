@@ -1,3 +1,21 @@
 {
-  "esnext": true
+  "predef": [
+        "QUnit",
+        "equal",
+        "notEqual",
+        "notStrictEqual",
+        "test",
+        "asyncTest",
+        "raises",
+        "throws",
+        "deepEqual",
+        "ok",
+        "strictEqual",
+        "module",
+	"expect"
+  ],
+  "esnext": true,
+  "eqeqeq": true,
+  "unused": true,
+  "undef": true
 }
