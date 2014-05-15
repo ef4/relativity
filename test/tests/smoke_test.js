@@ -1,9 +1,9 @@
-import Clock from "relativity";
+import Stamp from "relativity";
 
 module("Basic Sanity Checks");
 
-test("can create clock", function() {
-  ok((new Clock) instanceof Clock, "Created a clock with new");
-  ok(Clock() instanceof Clock, "Created a clock without new");  
+test("can create stamp", function() {
+  ok((new Stamp) instanceof Stamp, "Created a clock with new");
+  ok(Stamp() instanceof Stamp, "Created a clock without new");  
 });
 
