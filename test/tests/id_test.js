@@ -5,7 +5,7 @@ module("ID");
 function isDisjoint(idA, idB) {
   return idA.zip(idB).foldUp(function(left, right, value) {
     return left && right && !(value[0] && value[1]);
-  }, true)
+  }, true);
 }
 
 test("build leaf ID", function() {

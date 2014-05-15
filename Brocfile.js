@@ -3,6 +3,7 @@ var filterES6Modules = require('broccoli-es6-module-filter');
 var pickFiles = require('broccoli-static-compiler');
 var mergeTrees = require('broccoli-merge-trees');
 var concatFilenames = require('broccoli-concat-filenames');
+var jshintTree = require('broccoli-jshint');
 
 function createAMDTree() {
   var amd = filterES6Modules('lib', {
@@ -57,8 +58,11 @@ function makeTests() {
     outputFile: '/tests/loader.js'
   });
 
-  // Merge all test related stuff into tests tree
-  return mergeTrees([qunit, html, loader, tests, testsMain]);
+  var hints = jshintTree(mergeTrees(['lib', 'test/tests']), {
+    destFile: '/tests/hints.js'
+  });
+  
+  return mergeTrees([qunit, html, loader, tests, hints, testsMain]);
 
 }
 

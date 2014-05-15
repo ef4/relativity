@@ -16,7 +16,7 @@ test("min", function() {
   ];
   for (var i=0; i<examples.length; i++) {
     deepEqual(new Event(examples[i].from).min(), examples[i].to);
-  };
+  }
 });
 
 test("normalize", function() {
@@ -27,7 +27,7 @@ test("normalize", function() {
   ];
   for (var i=0; i<examples.length; i++) {
     deepEqual((new Event(examples[i].from)).normalize().flatten(), examples[i].to);
-  };
+  }
 
 });
 
@@ -51,7 +51,7 @@ test("comparison", function() {
       ok(!value.lte(new Event(example.isNotLTE)), JSON.stringify(example));
     }
 
-  };
+  }
 
 });
 
@@ -65,6 +65,6 @@ test("join", function() {
   ];
   for (var i=0; i<examples.length; i++) {
     var e = examples[i];
-    deepEqual((new Event(e.a)).join(new Event(e.b)).flatten(), e.joinsTo)
+    deepEqual((new Event(e.a)).join(new Event(e.b)).flatten(), e.joinsTo);
   }
 });
