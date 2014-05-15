@@ -3,9 +3,9 @@ import ID from "relativity/id";
 module("ID");
 
 function isDisjoint(idA, idB) {
-  return idA.zip(idB).map(function(leaves) {
-    return !(leaves[0] && leaves[1]);
-  }).reduce(function(a, b) { return a && b })
+  return idA.zip(idB).foldUp(function(left, right, value) {
+    return left && right && !(value[0] && value[1]);
+  }, true)
 }
 
 test("build leaf ID", function() {

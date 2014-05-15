@@ -54,3 +54,17 @@ test("comparison", function() {
   };
 
 });
+
+
+test("join", function() {
+  var examples = [
+    {a: 1, b: 2, joinsTo: 2},
+    {a: [1, 0, 1], b: [0, 1, 1], joinsTo: 2},
+    {a: [2, 0, 1], b: [0, 1, 1], joinsTo: [1, 0, 2]},
+    {a: [[2, 0, 1], 0, 3], b: [[0, 1, 1], 0, 3], joinsTo: [[1, 0, 2], 0, 3]}    
+  ];
+  for (var i=0; i<examples.length; i++) {
+    var e = examples[i];
+    deepEqual((new Event(e.a)).join(new Event(e.b)).flatten(), e.joinsTo)
+  }
+});
