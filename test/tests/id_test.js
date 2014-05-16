@@ -1,4 +1,5 @@
 import ID from "relativity/id";
+import Bitfield from "relativity/bitfield";
 
 module("ID");
 
@@ -73,3 +74,21 @@ test("sum", function() {
     deepEqual(new ID(cases[i].add).sum(new ID(cases[i].to)).flatten(), cases[i].get);
   }
 });
+
+test("pack", function() {
+  var i = new ID([[0,1], [[0,1], 0]]);
+  var b = new Bitfield(8);
+  i.pack(b);
+  b.doneWriting();
+  strictEqual(b.hex(), '4723');
+});
+
+test("unpack", function() {
+  var b = new Bitfield(8);
+  b.write(0x2347, 16);
+  b.rewind();
+  var i = ID.unpack(b);
+  deepEqual(i.flatten(), [[0,1], [[0,1], 0]]);
+});
+
+

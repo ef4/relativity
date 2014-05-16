@@ -18,5 +18,6 @@
   "eqeqeq": true,
   "unused": true,
   "undef": true,
-  "trailing": true
+  "trailing": true,
+  "typed": true
 }
