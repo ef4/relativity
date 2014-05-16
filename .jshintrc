@@ -17,5 +17,6 @@
   "esnext": true,
   "eqeqeq": true,
   "unused": true,
-  "undef": true
+  "undef": true,
+  "trailing": true
 }
