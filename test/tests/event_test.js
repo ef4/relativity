@@ -1,6 +1,6 @@
-import Event from "relativity/event";
+import { Event } from "relativity";
 
-module("Event");
+QUnit.module("Event");
 
 test("creation", function(){
   var e = new Event([1, [2, 3, 4], 5]);

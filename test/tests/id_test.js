@@ -1,7 +1,6 @@
-import ID from "relativity/id";
-import Bitfield from "relativity/bitfield";
+import { ID, Bitfield} from "relativity";
 
-module("ID");
+QUnit.module("ID");
 
 function isDisjoint(idA, idB) {
   return idA.zip(idB).foldUp(function(left, right, value) {

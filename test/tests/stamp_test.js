@@ -1,8 +1,7 @@
 import Stamp from "relativity";
-import Event from "relativity/event";
-import ID from "relativity/id";
+import { Event, ID } from "relativity";
 
-module("Stamp");
+QUnit.module("Stamp");
 
 test("create", function() {
   ok((new Stamp()) instanceof Stamp, "Created a stamp with new");

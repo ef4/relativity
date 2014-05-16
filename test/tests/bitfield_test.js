@@ -1,6 +1,6 @@
-import Bitfield from "relativity/bitfield";
+import { Bitfield } from "relativity";
 
-module("Bitfield");
+QUnit.module("Bitfield");
 
 test("write", function() {
   var b = new Bitfield(16);

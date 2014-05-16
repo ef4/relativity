@@ -4,39 +4,53 @@ var pickFiles = require('broccoli-static-compiler');
 var mergeTrees = require('broccoli-merge-trees');
 var concatFilenames = require('broccoli-concat-filenames');
 var jshintTree = require('broccoli-jshint');
+var browserify = require('broccoli-browserify');
 
-function createAMDTree() {
-  var amd = filterES6Modules('lib', {
-    moduleType: 'amd',
+function cjs() {
+  return filterES6Modules('lib', {
+    moduleType: 'cjs',
     anonymous: false,
     packageName: 'relativity',
-    main: 'relativity'
+    main: 'relativity',
+    compatFix: true
   });
-  amd = concat(amd, {
+}
+
+function plainCJS() {
+  return concat(cjs(), {
     inputFiles: ['*.js'],
-    outputFile: '/relativity.amd.js'
+    outputFile: '/relativity.cjs.js'
   });
-  return amd;
+}
+
+function browserified() {
+  return browserify(cjs(), {
+    require: [['./relativity', {expose: 'relativity'}]],
+    outputFile: '/relativity.browserify.js'
+  });
 }
 
 function makeTests() {
-  var tests = filterES6Modules('test/tests', {
-    moduleType: 'amd',
+  // Create main.js which imports all tests
+  var testsMain = concatFilenames("test/tests", {
+    inputFiles: ["*_test.js"],
+    outputFile: "/main.js",
+    transform: function(fileName) {
+      return "import './" + fileName  + "';";
+    }
+  });
+
+  var tests = filterES6Modules(mergeTrees(['test/tests', testsMain]), {
+    moduleType: 'cjs',
+    compatFix: true,
     packageName: 'tests',
     anonymous: false
   });
-  tests = concat(tests, {
-    inputFiles: ['**/*.js'],
-    outputFile: '/tests/tests.js'
-  });
 
-  // Create /tests/tests_main.js which requires all tests (all test/tests/**/*_test.js files)
-  var testsMain = concatFilenames("test", {
-    inputFiles: ["**/*_test.js"],
-    outputFile: "/tests/tests_main.js",
-    transform: function(fileName) {
-      return "require('" + fileName  + "');";
-    }
+  var tests = browserify(tests, {
+    entries: ['./main.js'],
+    outputFile: '/tests/tests.js',
+    external: ['relativity']
   });
 
   // for use with qunit
@@ -62,9 +76,9 @@ function makeTests() {
     destFile: '/tests/hints.js'
   });
   
-  return mergeTrees([qunit, html, loader, tests, hints, testsMain]);
+  return mergeTrees([qunit, html, tests, hints]);
 
 }
 
-module.exports = mergeTrees([createAMDTree(), makeTests()]);
+module.exports = mergeTrees([plainCJS(), browserified(), makeTests()]);
 

@@ -1,6 +1,6 @@
 import Stamp from "relativity";
 
-module("Acceptance Tests");
+QUnit.module("Acceptance Tests");
 
 test("sample run from Almeida, et al", function() {
   var tmp, a, b, c, d, e, f, g, h, i, j, k, l, m, n;
