@@ -30,5 +30,5 @@ test("sample run from Almeida, et al", function() {
   ok(!(d.lte(e)), "d not in e's causal history");
   ok(!(e.lte(d)), "e not in d's causal history");
   ok(e.lte(j), "e in j's causal history");
-  ok(d.lte(j), "d in j's causal history");  
+  ok(d.lte(j), "d in j's causal history");
 });                                                     

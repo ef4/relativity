@@ -80,6 +80,7 @@ test("pack", function() {
   i.pack(b);
   b.doneWriting();
   strictEqual(b.hex(), '4723');
+  strictEqual(b.asUnicode(), "⍇");
 });
 
 test("unpack", function() {
@@ -88,6 +89,10 @@ test("unpack", function() {
   b.rewind();
   var i = ID.unpack(b);
   deepEqual(i.flatten(), [[0,1], [[0,1], 0]]);
+
+  i = ID.unpack(Bitfield.fromUnicode("⍇"));
+  deepEqual(i.flatten(), [[0,1], [[0,1], 0]]);  
+  
 });
 
 
