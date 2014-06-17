@@ -1,4 +1,4 @@
-*This is a work in progress, not fully implemented yet.*
+*This is an essentially complete implementation of Interval Tree Clocks. But I haven't yet deployed it in anger, and it lacks some niceties, like an efficient binary packed format.*
 
 Interval Tree Clocks for Javascript
 ===================================
