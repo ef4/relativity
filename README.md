@@ -6,6 +6,9 @@ Interval Tree Clocks for Javascript
 Because any sufficiently advanced web application *is* a distributed
 system.
 
+Related reading: [Interval Tree Clocks: A Logical Clock for Dynamic Systems](http://gsd.di.uminho.pt/members/cbm/ps/itc2008.pdf)
+
+
 Building
 --------
 
