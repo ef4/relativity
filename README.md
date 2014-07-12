@@ -27,9 +27,11 @@ On Garbage Collection
 
 Before we can use ITCs in a web application context, we need a way to garbage collect the ID space that was assigned to clients who never come back. Otherwise our event stamp size can grow without bound. The original ITC paper doesn't contemplate this issue. Conceptually, we want to safely revoke a client's id space so that we can reclaim it without risking causality violations if the client eventually comes back.
 
-My proposed solution (*not implemented yet, PRs welcome*): each local clock contains an additional event stamp `B` representing the point in causal time before which no new events are allowed. That is, all new events must be causal descendants of `B`. We can increment `B` over time such that it trails behind by whatever window of time is appropriate for our application. This window represents the longest time a client can remain disconnected and still rejoin the network without having its unshared events declared as "stale" and rejected by other clients.
+*The following in underspecified and not correct yet.*
 
-Clients will refuse to `join` events that are not causally decsended from their `B`. But of course some clients may already have received such events -- there's a race between the propagation of a long-dormant event and our update to `B`. But eventually, the `B`-update propagates to everyone, and they can see which of their own events are actually not concensus-approved and take appropriate action. 
+A proposed solution: each local clock contains an additional event stamp `B` representing the point in causal time before which no new events are allowed. That is, we will refuse to `join` events that are not causal descendants of `B`. We can can increment `B` over time such that it trails behind by whatever window of time is appropriate for our application. This window represents the longest time a client can remain disconnected and still rejoin the network without having its unshared events declared as "stale" and rejected by other clients.
+
+We actually increment `B` by generating a special event `E`. Within `E`'s stamp we can safely reclaim the old unused id space. When a client learns `E`, it may discover that it has already accepted some stale events (anything not descended from the new `B` that is not descended from `E`), and therefore needs to take appropriate action.
 
 "Appropritae action" will vary -- the client that originated the events may be able to "rebase" (in the git sense) them onto the newer state. Or just tell the user "sorry, you've been away so long your edits are stale, here's what they were, do you want to redo them?". Other clients that happened to hear about the stale changes before hearing the `B` update can simply choose to undo and/or drop them, so that they remain consistent with the global eventual consensus.
 
@@ -40,9 +42,8 @@ Rules for `B`:
 - join:
   - if the incoming event stamp is not a descdant of our local `B`, reject the event because it's too old.
   - if the incoming `B` is not a descendant of our current event stamp, zero out our id because we're stale, and then overwrite our local `B` with the incoming `B`. We're now unable to generate new events, and need to go get a new clock.
-  - if the incoming `B` is a equal to or descended from our local `B`, replace our `B` with the incoming `B`.
-  - 
-Any time our `B` changes, we should check to see if any of our already-learned events are actually rejected.
+  - if the incoming `B` is a equal to our local `B`, nothing to do.
+  - if the incoming `B` is a descendant of our local `B`, we should check for any stale events that we've already accepted, deal with them, then replace our `B` with the new `B`.
 
 On Security
 ------------
