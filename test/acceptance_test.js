@@ -35,4 +35,39 @@ describe("Acceptance Tests", function(){
     expect(e.lte(j), "e in j's causal history").to.be.true();
     expect(d.lte(j), "d in j's causal history").to.be.true();
   });
+
+
+  it("anonymous stamps can be joined and will sort correctly", function() {
+    var a, b, c, d, e, f, g, h, i, j, k, l, m, n;
+
+    a = new Stamp();
+    [b,c] = a.fork();
+    d = b.event();
+    e = c.event();
+    [f,g] = d.fork();
+    h = e.event();
+    i = f.event();
+    j = g.join(h);
+    [k,l] = j.fork();
+    m = i.join(k);
+    n = m.event();
+
+    var virtualJ = g.peek().join(h.peek());
+    expect(virtualJ.lte(j)).to.be.true();
+    expect(j.lte(virtualJ)).to.be.true();
+
+    var intermediate = b.peek().join(h.peek());
+    expect(a.lte(intermediate)).to.be.true();
+    expect(b.lte(intermediate)).to.be.true();
+    expect(c.lte(intermediate)).to.be.true();
+    expect(e.lte(intermediate)).to.be.true();
+    expect(h.lte(intermediate)).to.be.true();
+
+    expect(d.lte(intermediate)).to.be.false();
+    expect(f.lte(intermediate)).to.be.false();
+    expect(g.lte(intermediate)).to.be.false();
+    expect(i.lte(intermediate)).to.be.false();
+    expect(j.lte(intermediate)).to.be.false();
+  });
+
 });
