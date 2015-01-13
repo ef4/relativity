@@ -6,25 +6,25 @@ var expect = chai.expect;
 describe("Acceptance Tests", function(){
 
   it("completes sample run from Almeida, et al", function() {
-    var tmp, a, b, c, d, e, f, g, h, i, j, k, l, m, n;
+    var a, b, c, d, e, f, g, h, i, j, k, l, m, n;
 
-    a = new Stamp();  //
-    tmp = a.fork();   //
-    b = tmp[0];       //                       -----o--------o-----------
-    c = tmp[1];       //                      /     F        I           `
-    d = b.event();    //                     /                            `
-    e = c.event();    //       ----o--------o                              o--------o
-    tmp = d.fork();   //      /    B        D`                            /M        N
-    f = tmp[0];       //     /                `                          /
-    g = tmp[1];       //    o                  -----o-----     -----o----
-    h = e.event();    //    A`                      G     `   /     K
-    i = f.event();    //      `                            ` /
-    j = g.join(h);    //       `                            o
-    tmp = j.fork();   //        `                          /J`
-    k = tmp[0];       //         `                        /   `
-    l = tmp[1];       //          -o--------o-------o-----     -----o
-    m = i.join(k);    //           C        E       H               L
-    n = m.event();    //
+    a = new Stamp();    //
+    [b,c] = a.fork();   //
+    d = b.event();      //                       -----o--------o-----------
+    e = c.event();      //                      /     F        I           `
+    [f,g] = d.fork();   //                     /                            `
+    h = e.event();      //       ----o--------o                              o--------o
+    i = f.event();      //      /    B        D`                            /M        N
+    j = g.join(h);      //     /                `                          /
+    [k,l] = j.fork();   //    o                  -----o-----     -----o----
+    m = i.join(k);      //    A`                      G     `   /     K
+    n = m.event();      //      `                            ` /
+                        //       `                            o
+                        //        `                          /J`
+                        //         `                        /   `
+                        //          -o--------o-------o-----     -----o
+                        //           C        E       H               L
+                        //
 
     expect(n.flatten()).to.deep.equal([[1,0], 2]);
     expect(l.flatten()).to.deep.equal([[0,1], [0, 1, 1]]);
