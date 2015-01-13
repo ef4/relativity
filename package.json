@@ -13,6 +13,11 @@
   "license": "MIT",
   "devDependencies": {
     "6to5": "^2.11.1",
+    "broccoli": "^0.13.3",
+    "broccoli-es6modules": "^0.3.2",
+    "broccoli-funnel": "^0.1.7",
+    "broccoli-merge-trees": "^0.2.1",
+    "broccoli-sourcemap-concat": "^0.4.3",
     "chai": "^1.10.0",
     "mocha": "^2.1.0"
   }

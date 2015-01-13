@@ -1,84 +1,29 @@
-var concat = require('broccoli-concat');
-var filterES6Modules = require('broccoli-es6-module-filter');
-var pickFiles = require('broccoli-static-compiler');
-var mergeTrees = require('broccoli-merge-trees');
-var concatFilenames = require('broccoli-concat-filenames');
-var jshintTree = require('broccoli-jshint');
-var browserify = require('broccoli-browserify');
+/* jshint node: true */
+var concat = require('broccoli-sourcemap-concat');
+var ES6Compiler = require('broccoli-es6modules');
+var Funnel = require('broccoli-funnel');
+var merge = require('broccoli-merge-trees');
 
-function cjs() {
-  return filterES6Modules('lib', {
-    moduleType: 'cjs',
-    anonymous: false,
-    packageName: 'relativity',
-    main: 'relativity',
-    compatFix: true
-  });
-}
+var lib = concat(new Funnel(new ES6Compiler('lib'), {destDir: 'lib'}), {
+  inputFiles: ["lib/*.js"],
+  outputFile: 'relativity.js'
+});
 
-function plainCJS() {
-  return concat(cjs(), {
-    inputFiles: ['*.js'],
-    outputFile: '/relativity.cjs.js'
-  });
-}
 
-function browserified() {
-  return browserify(cjs(), {
-    require: [['./relativity', {expose: 'relativity'}]],
-    outputFile: '/relativity.browserify.js'
-  });
-}
+var testJS = concat(merge([
+  new ES6Compiler(new Funnel('test', {destDir: 'test', include: [/\.js$/]})),
+  new Funnel('vendor', {destDir: 'vendor'}),
+  new Funnel('node_modules/mocha', {destDir: 'mocha'}),
+  new Funnel('node_modules/chai', {destDir: 'chai'})
+]), {
+  headerFiles: ['vendor/loader.js', 'mocha/mocha.js', 'chai/chai.js'],
+  inputFiles: ['test/*.js'],
+  outputFile: 'tests.js'
+});
 
-function makeTests() {
-  // Create main.js which imports all tests
-  var testsMain = concatFilenames("test/tests", {
-    inputFiles: ["*_test.js"],
-    outputFile: "/main.js",
-    transform: function(fileName) {
-      return "import './" + fileName  + "';";
-    }
-  });
+var testPublic = merge([
+  new Funnel('node_modules/mocha', { include: [/mocha\.css$/] }),
+  new Funnel('test', { include: [/index\.html/] })
+]);
 
-  var tests = filterES6Modules(mergeTrees(['test/tests', testsMain]), {
-    moduleType: 'cjs',
-    compatFix: true,
-    packageName: 'tests',
-    anonymous: false
-  });
-
-  var tests = browserify(tests, {
-    entries: ['./main.js'],
-    outputFile: '/tests/tests.js',
-    external: ['relativity']
-  });
-
-  // for use with qunit
-  var html = pickFiles('test', {
-    files:  ['index.html'],
-    srcDir: '/',
-    destDir: '/tests'
-  });
-
-  // QUnit itself
-  var qunit = pickFiles('node_modules/qunitjs/qunit', {
-    files:  ['qunit.js', 'qunit.css'],
-    srcDir: '/',
-    destDir: '/tests'
-  });
-   
-  var loader = concat('vendor', {
-    inputFiles: ['loader.js'],
-    outputFile: '/tests/loader.js'
-  });
-
-  var hints = jshintTree(mergeTrees(['lib', 'test/tests']), {
-    destFile: '/tests/hints.js'
-  });
-  
-  return mergeTrees([qunit, html, tests, hints]);
-
-}
-
-module.exports = mergeTrees([plainCJS(), browserified(), makeTests()]);
-
+module.exports = merge([lib, testJS, testPublic]);
