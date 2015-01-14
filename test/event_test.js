@@ -1,5 +1,5 @@
 /* global describe, it */
-import { Event } from "relativity";
+import { Event, Bitfield } from "relativity";
 import chai from "chai";
 var expect = chai.expect;
 
@@ -72,4 +72,25 @@ describe("Event", function() {
       expect((new Event(e.a)).join(new Event(e.b)).flatten()).to.deep.equal(e.joinsTo);
     }
   });
+
+  it("can be packed & unpacked", function() {
+    var examples = [
+      { event: [ 0, 7, 0] },
+      { event: [ 0, [1, 0, 0], 0] },
+      { event: [ [1, 0, 0], 0, 0] },
+      { event: [ [1, 0, 0], [0, 1, 0], 0] },
+      { event: [ 0, [1, 0, 0], 100] },
+      { event: [ [1, 0, 0], 0, 100] },
+      { event: [ [1, 0, 0], [0, 1, 0], 100] }
+    ];
+    for (var i=0; i<examples.length; i++) {
+      var e = new Event(examples[i].event);
+      var bitfield = new Bitfield(256);
+      e.pack(bitfield);
+      bitfield = bitfield.dup().rewind();
+      expect(Event.unpack(bitfield).flatten()).to.deep.equal(examples[i].event);
+    }
+  });
+
+
 });
