@@ -81,25 +81,24 @@ describe("ID", function() {
     }
   });
 
-  it("can be packed", function() {
-    var i = new ID([[0,1], [[0,1], 0]]);
-    var b = new Bitfield(8);
-    i.pack(b);
-    b.doneWriting();
-    expect(b.hex()).to.equal('4723');
-    expect(b.asUnicode()).to.equal("⍇");
-  });
 
-  it("can be unpacked", function() {
-    var b = new Bitfield(8);
-    b.write(0x2347, 16);
-    b.rewind();
-    var i = ID.unpack(b);
-    expect(i.flatten()).to.deep.equal([[0,1], [[0,1], 0]]);
-
-    i = ID.unpack(Bitfield.fromUnicode("⍇"));
-    expect(i.flatten()).to.deep.equal([[0,1], [[0,1], 0]]);
-
+  it("can be packed & unpacked", function() {
+    var examples = [
+      { id: 0 },
+      { id: 1 },
+      { id: [ 0, 1 ] },
+      { id: [ 1, 0 ] },
+      { id: [ 1, 1 ] },
+      { id: [ 1, [ 0, 1] ] },
+      { id: [[1, 0], 0 ] }
+    ];
+    for (var i=0; i<examples.length; i++) {
+      var id = new ID(examples[i].id);
+      var bitfield = new Bitfield(256);
+      id.pack(bitfield);
+      bitfield = bitfield.dup().rewind();
+      expect(ID.unpack(bitfield).flatten()).to.deep.equal(examples[i].id);
+    }
   });
 
 });
